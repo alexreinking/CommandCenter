@@ -2,13 +2,12 @@
 #define _GNU_SOURCE
 #endif
 /*
-Migrating to the Beaglebone Black.  This is for the purpose of making the 
+Migrating to the Beaglebone Black.  This is for the purpose of making the
 project compatible with future development of the platform and to remove
 some of the bugs with the white.  This currently removes the functionality
 of the PWM input.  This will remain disabled until a suitible solution can
 be found, which will likely have to happen by leveraging the on board PRUs
 */
-
 
 #include <string.h>
 #include <stdlib.h>
@@ -177,7 +176,7 @@ void setup()
     //Configure stay-alive pin, start low
     //Preferably, this pin will have a resistor
     //between it and the killswitch circuit
-    
+
 
     //Start keeping track of time
     secondStartTime = millis();
@@ -199,7 +198,7 @@ void setup()
 }
 
 //Handles general-from-anywhere things
-void baseHandleTag(const char* tag, const char* data)
+void baseHandleTag(const char *tag, const char *data)
 {
     if (strcmp(tag, "KL") == 0)
     {
@@ -209,7 +208,7 @@ void baseHandleTag(const char* tag, const char* data)
     else if (strcmp(tag, "ST") == 0)
     {
         //Try to parse time value
-        char* endPtr;
+        char *endPtr;
         long seconds = strtol(data, &endPtr, 10);
         //We have parsed the time value correcly if
         //endPtr points to the null-terminator of the string.
@@ -221,7 +220,7 @@ void baseHandleTag(const char* tag, const char* data)
 }
 
 // Only does it if there is space...
-void forwardTag(const char* tag, const char* data)
+void forwardTag(const char *tag, const char *data)
 {
     //Set to be forwarded if there is space
     if (cellStoredTagOn < CELL_MAX_TAGS)
@@ -237,13 +236,13 @@ void forwardTag(const char* tag, const char* data)
 }
 
 //Handles tags from cell shield
-void cellShieldHandleTag(const char* tag, const char* data)
+void cellShieldHandleTag(const char *tag, const char *data)
 {
     //Specifically, we would like to forward all non-base tags
     //Keep special track of these two...
     //Forward everything else...
     if (strcmp(tag, "KL") != 0 &&
-        strcmp(tag, "ST") != 0)
+            strcmp(tag, "ST") != 0)
     {
         forwardTag(tag, data);
     }
@@ -267,7 +266,7 @@ char getHexOfNibble(char c)
     }
 }
 
-void sendTag(const char* tag, const char* data, Uart& uart)
+void sendTag(const char *tag, const char *data, Uart &uart)
 {
     if (data && *data)
     {
@@ -281,7 +280,7 @@ void sendTag(const char* tag, const char* data, Uart& uart)
     }
 }
 
-void sendTag(const char* tag, const char* data, std::ostream& stream)
+void sendTag(const char *tag, const char *data, std::ostream &stream)
 {
     if (data && *data)
     {
@@ -296,7 +295,7 @@ void sendTag(const char* tag, const char* data, std::ostream& stream)
 }
 
 template<class T>
-void sendTag(const char* tag, T data, std::ostream& stream)
+void sendTag(const char *tag, T data, std::ostream &stream)
 {
     std::stringstream convertOutput;
     convertOutput << data;
@@ -304,7 +303,7 @@ void sendTag(const char* tag, T data, std::ostream& stream)
 }
 
 template<class T>
-void sendTag(const char* tag, T data, Uart& uart)
+void sendTag(const char *tag, T data, Uart &uart)
 {
     std::stringstream convertOutput;
     convertOutput << data;
@@ -314,7 +313,7 @@ void sendTag(const char* tag, T data, Uart& uart)
 //Sends tag with data to the transceiver and possible std::cout for debugging
 //Avoids sending tags with NULL or empty data (for convenience)
 template<class T>
-void mainSendTag(const char* tag, T data)
+void mainSendTag(const char *tag, T data)
 {
     sendTag(tag, data, transceiverUart);
     if (debugEchoMode & 32)
@@ -326,7 +325,7 @@ void mainSendTag(const char* tag, T data)
 void cellShieldSendInformation()
 {
     std::stringstream completeText;
-    
+
     static int sendCounter = 0;
 
     // Send every several minutes...
@@ -340,59 +339,59 @@ void cellShieldSendInformation()
         sendTag("GS", lastSatelliteCount, completeText);
         sendTag("DT", secondsToTimeout, completeText);
         sendTag("LV", hasKickedBucket ? "0" : "1", completeText);
-        
+
         //This is Jason's phone number.  Please change it to your own when testing!
         cellDriver.queueTextMessage("12537408798", completeText.str().c_str());
     }
 
 
-        //Periodically Send update messages (every 5 minutes)
-        if (startTimer + 600000 < millis())
+    //Periodically Send update messages (every 5 minutes)
+    if (startTimer + 600000 < millis())
+    {
+        printf("Sending a Text Message\n\r");
+        /*This needs to be changed for whatever information should be sent via text*/
+        int hours = floor((millis() - permanentStartTimer) / 3600000);
+        int minutes = floor(((millis() - permanentStartTimer) / 1000 - hours * 3600) / 60);
+        int seconds = (millis() - permanentStartTimer) / 1000 - hours * 3600 - minutes * 60;
+
+        std::stringstream messageTextString;
+        messageTextString << "Balloon says hello at " << hours << ":" << minutes << ":" << seconds << " from boot.";
+        std::string messageAsString;
+
+        messageAsString = messageTextString.str();
+        //This is Jason's phone number.  Please change it to your own when testing!
+        cellDriver.queueTextMessage("12537408798", messageAsString.c_str());
+        startTimer = millis();
+
+    }
+
+    //Periodically Send Location Requests (every 120 seconds)
+    if (towerTimer + 120000 < millis())
+    {
+        printf("Asking for towers\n\r");
+        if (cellDriver.newTowerInfo)
         {
-            printf("Sending a Text Message\n\r");
-/*This needs to be changed for whatever information should be sent via text*/
-        int hours = floor((millis() - permanentStartTimer)/3600000);
-        int minutes = floor(((millis() - permanentStartTimer)/1000 - hours*3600)/60);
-        int seconds = (millis() - permanentStartTimer)/1000 - hours*3600 - minutes*60;
-        
-            std::stringstream messageTextString;
-            messageTextString << "Balloon says hello at " << hours << ":" << minutes << ":" << seconds << " from boot.";   
-            std::string messageAsString;
+            std::string lastTowerInfo;
+            lastTowerInfo = cellDriver.getLastTowerInformation();
 
-            messageAsString = messageTextString.str();
-            //This is Jason's phone number.  Please change it to your own when testing!
-            cellDriver.queueTextMessage("12537408798",messageAsString.c_str());
-            startTimer = millis();
-
+            std::cout << lastTowerInfo << std::endl;
+            mainSendTag("CT", lastTowerInfo); //untested
+            towerTimer = millis();
+            cellDriver.newTowerInfo = false;
         }
 
-                //Periodically Send Location Requests (every 120 seconds)
-        if (towerTimer + 120000 < millis())
-        {
-            printf("Asking for towers\n\r");
-            if (cellDriver.newTowerInfo)
-            {
-                std::string lastTowerInfo;
-                lastTowerInfo = cellDriver.getLastTowerInformation();
-
-                std::cout << lastTowerInfo << std::endl;
-                mainSendTag("CT", lastTowerInfo); //untested
-                towerTimer = millis();
-                cellDriver.newTowerInfo = false;
-            }
-
-        }  
+    }
 
 }
 
 void loop()
 {
-//    char insideTemperature[10];
-//    char outsideTemperature[10];
-//    bool gottenInsideTemp = false;
-//    bool gottenOutsideTemp = false;
-    
-//    int32_t temperature = temperatureSensor.readTemperature();
+    //    char insideTemperature[10];
+    //    char outsideTemperature[10];
+    //    bool gottenInsideTemp = false;
+    //    bool gottenOutsideTemp = false;
+
+    //    int32_t temperature = temperatureSensor.readTemperature();
 
     //Keep track of what new data we have gotten
     bool gottenGps = false;
@@ -409,28 +408,28 @@ void loop()
             // See the comments of debugEchoMode for details...
             switch (c)
             {
-                case ')':
-                    debugEchoMode = 0;
-                    break;
-                case '!':
-                    debugEchoMode ^= 1;
-                    break;
-                case '@':
-                    debugEchoMode ^= 2;
-                    break;
-                case '#':
-                    debugEchoMode ^= 4;
-                    break;
-                case '$':
-                    debugEchoMode ^= 8;
-                    break;
-                case '%':
-                    debugEchoMode ^= 16;
-                    cellDriver.shouldEchoUartToStdout = (debugEchoMode & 16);
-                    break;
-                case '^':
-                    debugEchoMode ^= 32;
-                    break;
+            case ')':
+                debugEchoMode = 0;
+                break;
+            case '!':
+                debugEchoMode ^= 1;
+                break;
+            case '@':
+                debugEchoMode ^= 2;
+                break;
+            case '#':
+                debugEchoMode ^= 4;
+                break;
+            case '$':
+                debugEchoMode ^= 8;
+                break;
+            case '%':
+                debugEchoMode ^= 16;
+                cellDriver.shouldEchoUartToStdout = (debugEchoMode & 16);
+                break;
+            case '^':
+                debugEchoMode ^= 32;
+                break;
             }
             if (debugEchoMode & 1)
             {
@@ -441,7 +440,7 @@ void loop()
                 baseHandleTag(debuggingData.tag, debuggingData.data);
             }
         }
-        
+
         static TagParseData transceiverData;
         c = -1;
         while ((c = transceiverUart.readByte()) != -1)
@@ -450,7 +449,7 @@ void loop()
             {
                 std::cout << (char)c;
             }
-            
+
             if (parseTag(c, &transceiverData))
             {
                 // Handle the tag we just marvelously got!
@@ -483,19 +482,19 @@ void loop()
                 gottenImu = true;
             }
         }
-        
+
         static TagParseData cellData;
         if (cellDriver.update())
         {
             TextMessage textMessage = cellDriver.getTextMessage();
-            const char* messageData = textMessage.messageData.c_str();
+            const char *messageData = textMessage.messageData.c_str();
             int length = textMessage.messageData.length();
 
             printf("\n\r");
             for (int i = 0; i < length; i++)
             {
                 //This is where the parsing will take place, but it has to be formatted for the appropriate application
-                printf("%c",messageData[i]);
+                printf("%c", messageData[i]);
                 /*
                 if (parseTag(messageData[i], &cellData))
                 {
@@ -507,21 +506,21 @@ void loop()
             // Remove it from the module. it is a gonner now.
             cellDriver.deleteMessage(textMessage);
         }
-        
+
         // Give up a little time to the system...
         struct timespec sleepTime = {0, 1000};
         nanosleep(&sleepTime, NULL);
     }
 
-/*
-At some point you have to do something intelligent with all this data.
-Most likely, you don't want to be doing calculations every time throug the
-loop.  That would be ridiculous and wasteful. It would be better to do 
-it on some set interval, such as 200 ms. That is up to the designers of the program
-and the control system.
-*/
+    /*
+    At some point you have to do something intelligent with all this data.
+    Most likely, you don't want to be doing calculations every time throug the
+    loop.  That would be ridiculous and wasteful. It would be better to do
+    it on some set interval, such as 200 ms. That is up to the designers of the program
+    and the control system.
+    */
 
-//This part of the code is only executed every second!!!!
+    //This part of the code is only executed every second!!!!
     //Notice the start time of this next second
     secondStartTime += 1000;
 
@@ -548,13 +547,13 @@ and the control system.
     }
 
 
-   //Send out data -- ALL the data!
+    //Send out data -- ALL the data!
     int32_t temperatureInside = temperatureSensor.readTemperature();
-    printf("Temperature: %f\n\r", (float) temperatureInside/10.0);
+    printf("Temperature: %f\n\r", (float) temperatureInside / 10.0);
     mainSendTag("TI", temperatureInside); //untested
 
 
- 
+
 
     if (gottenGps)
     {
@@ -565,11 +564,11 @@ and the control system.
         mainSendTag("LO", gpsDecoder.getLongitude());
         mainSendTag("LA", gpsDecoder.getLatitude());
         mainSendTag("AL", gpsDecoder.getAltitude());
-        
+
         //mainSendTag("SP", gpsDecoder.getSpeed());
         //mainSendTag("TH", gpsDecoder.getTrueHeading());
         //mainSendTag("MH", gpsDecoder.getMagneticHeading());
-        
+
         lastLongitude = gpsDecoder.getLongitude();
         lastLatitude = gpsDecoder.getLatitude();
         lastSatelliteCount = gpsDecoder.getSatelliteCount();
@@ -593,20 +592,20 @@ and the control system.
 
 #ifdef IMULogData
 
-    if (!IMUFileOpened)
-    {
-    imuoutput = fopen ("imuData4.txt","w");
-    IMUFileOpened = true;
-    }
+        if (!IMUFileOpened)
+        {
+            imuoutput = fopen ("imuData4.txt", "w");
+            IMUFileOpened = true;
+        }
 
-    fprintf(imuoutput, "%f %f %f ", imuDecoder.getYaw(), imuDecoder.getPitch(), imuDecoder.getRoll());
-    fprintf(imuoutput, "%f %f %f ", imuDecoder.getAcceleration().coordX, imuDecoder.getAcceleration().coordY, imuDecoder.getAcceleration().coordZ);
-    fprintf(imuoutput, "%f %f %f ", imuDecoder.getSpaceAcceleration().coordX, imuDecoder.getSpaceAcceleration().coordY, imuDecoder.getSpaceAcceleration().coordZ);
-    fprintf(imuoutput, "%f %f %f ", imuDecoder.getIntegratedVelocity().coordX, imuDecoder.getIntegratedVelocity().coordY, imuDecoder.getIntegratedVelocity().coordZ);
-    fprintf(imuoutput, "%f %f %f ", imuDecoder.getSpaceIntegratedVelocity().coordX, imuDecoder.getSpaceIntegratedVelocity().coordY, imuDecoder.getSpaceIntegratedVelocity().coordZ);
-    fprintf(imuoutput, "%f %f %f ", imuDecoder.getIntegratedPosition().coordX, imuDecoder.getIntegratedPosition().coordY, imuDecoder.getIntegratedPosition().coordZ);
-    fprintf(imuoutput, "%f %f %f ", imuDecoder.getSpaceIntegratedPosition().coordX, imuDecoder.getSpaceIntegratedPosition().coordY, imuDecoder.getSpaceIntegratedPosition().coordZ);
-    fprintf(imuoutput, "%f \n", imuDecoder.getAcceleration().timestamp);
+        fprintf(imuoutput, "%f %f %f ", imuDecoder.getYaw(), imuDecoder.getPitch(), imuDecoder.getRoll());
+        fprintf(imuoutput, "%f %f %f ", imuDecoder.getAcceleration().coordX, imuDecoder.getAcceleration().coordY, imuDecoder.getAcceleration().coordZ);
+        fprintf(imuoutput, "%f %f %f ", imuDecoder.getSpaceAcceleration().coordX, imuDecoder.getSpaceAcceleration().coordY, imuDecoder.getSpaceAcceleration().coordZ);
+        fprintf(imuoutput, "%f %f %f ", imuDecoder.getIntegratedVelocity().coordX, imuDecoder.getIntegratedVelocity().coordY, imuDecoder.getIntegratedVelocity().coordZ);
+        fprintf(imuoutput, "%f %f %f ", imuDecoder.getSpaceIntegratedVelocity().coordX, imuDecoder.getSpaceIntegratedVelocity().coordY, imuDecoder.getSpaceIntegratedVelocity().coordZ);
+        fprintf(imuoutput, "%f %f %f ", imuDecoder.getIntegratedPosition().coordX, imuDecoder.getIntegratedPosition().coordY, imuDecoder.getIntegratedPosition().coordZ);
+        fprintf(imuoutput, "%f %f %f ", imuDecoder.getSpaceIntegratedPosition().coordX, imuDecoder.getSpaceIntegratedPosition().coordY, imuDecoder.getSpaceIntegratedPosition().coordZ);
+        fprintf(imuoutput, "%f \n", imuDecoder.getAcceleration().timestamp);
 #endif
 
 
@@ -614,21 +613,21 @@ and the control system.
 
     }
 
-/*
-    mainSendTag("MC", lastCellMmc);
-    mainSendTag("MN", lastCellMnc);
-    mainSendTag("LC", lastCellLac);
-    mainSendTag("CD", lastCellCid);
-*/
+    /*
+        mainSendTag("MC", lastCellMmc);
+        mainSendTag("MN", lastCellMnc);
+        mainSendTag("LC", lastCellLac);
+        mainSendTag("CD", lastCellCid);
+    */
 
     //Send extra tags passed from the cellular connection
-/*
-    while (cellStoredTagOn > 0)
-    {
-        cellStoredTagOn--;
-        mainSendTag(cellStoredTags[cellStoredTagOn], cellStoredData[cellStoredTagOn]);
-    }
-*/
+    /*
+        while (cellStoredTagOn > 0)
+        {
+            cellStoredTagOn--;
+            mainSendTag(cellStoredTags[cellStoredTagOn], cellStoredData[cellStoredTagOn]);
+        }
+    */
 
     //Life left...
     mainSendTag("DT", secondsToTimeout);
@@ -641,7 +640,7 @@ and the control system.
     {
         std::cout << "\n";
     }
-    
+
     // Information sent to the cell shield arduino must be done separately to avoid overworking him.
     cellShieldSendInformation();
 
@@ -652,41 +651,36 @@ and the control system.
     static int servoToggle = 0;
     if (servoToggle <= 0)
     {
-    servoController.setSpeed(7,126);
-    servoController.setAngle(7,3500);
-    servoToggle = 1;
+        servoController.setSpeed(7, 126);
+        servoController.setAngle(7, 3500);
+        servoToggle = 1;
 
-    digitalWrite(LED_1, LOW);
-    digitalWrite(LED_2, LOW);
-    digitalWrite(LED_3, LOW);
-    digitalWrite(LED_4, LOW);
-    digitalWrite(LED_5, LOW);
-    digitalWrite(LED_6, LOW);
-    digitalWrite(LED_7, LOW);
-    digitalWrite(LED_8, LOW);
+        digitalWrite(LED_1, LOW);
+        digitalWrite(LED_2, LOW);
+        digitalWrite(LED_3, LOW);
+        digitalWrite(LED_4, LOW);
+        digitalWrite(LED_5, LOW);
+        digitalWrite(LED_6, LOW);
+        digitalWrite(LED_7, LOW);
+        digitalWrite(LED_8, LOW);
 
     }
     else
     {
-    servoController.setSpeed(7,50);
-    servoController.setAngle(7,1500);
-    servoToggle = 0;
+        servoController.setSpeed(7, 50);
+        servoController.setAngle(7, 1500);
+        servoToggle = 0;
 
-    digitalWrite(LED_1, HIGH);
-    digitalWrite(LED_2, HIGH);
-    digitalWrite(LED_3, HIGH);
-    digitalWrite(LED_4, HIGH);
-    digitalWrite(LED_5, HIGH);
-    digitalWrite(LED_6, HIGH);
-    digitalWrite(LED_7, HIGH);
-    digitalWrite(LED_8, HIGH);
+        digitalWrite(LED_1, HIGH);
+        digitalWrite(LED_2, HIGH);
+        digitalWrite(LED_3, HIGH);
+        digitalWrite(LED_4, HIGH);
+        digitalWrite(LED_5, HIGH);
+        digitalWrite(LED_6, HIGH);
+        digitalWrite(LED_7, HIGH);
+        digitalWrite(LED_8, HIGH);
 
     }
-
-
-
-
-
 }
 
 void restoreTerminal()
@@ -694,21 +688,21 @@ void restoreTerminal()
     tcsetattr(0, TCSANOW, &oldTerminalSettings);
 }
 
-int main(int argc, char* argv[])
+int main(int argc, char *argv[])
 {
     //Unbuffered output, so the file can be read in as streamed.
     setvbuf(stdout, NULL, _IONBF, 0);
-    
+
     //Don't wait for newline to get stdin input
     struct termios terminalSettings;
     if (tcgetattr(0, &terminalSettings) < 0)
     {
         perror("Error getting terminal settings");
     }
-    
+
     // Save old terminal settings
     oldTerminalSettings = terminalSettings;
-    
+
     // disable canonical mode processing in the line discipline driver
     // So everything is read in instantly from stdin!
     // Also, don't echo back characters... so we only see what we receive!
@@ -718,17 +712,17 @@ int main(int argc, char* argv[])
     // and we have no minimum number of characters to receive (VMIN = 0)
     terminalSettings.c_cc[VTIME] = 0;
     terminalSettings.c_cc[VMIN] = 0;
-    
+
     if (tcsetattr(0, TCSANOW, &terminalSettings) < 0)
     {
         perror("Error setting terminal settings");
     }
-    
+
     atexit(restoreTerminal);
-    
+
     // do initialization
     setup();
-    
+
     // Perform our main loop FOREVER!
     while (1)
     {

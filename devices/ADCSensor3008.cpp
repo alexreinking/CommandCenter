@@ -39,7 +39,7 @@ int32_t ADCSensor3008::initializeSpi()
             return -1;
         }
         ADCSensor3008::spiAdcHandle = handle;
-        
+
         // Set to SPI Mode 3, data in on falling edge, data out on rising edge
         uint8_t mode = 3;
         int result = ioctl(ADCSensor3008::spiAdcHandle, SPI_IOC_WR_MODE, &mode);
@@ -48,7 +48,7 @@ int32_t ADCSensor3008::initializeSpi()
             perror("ADCSensor3008: setting spi to mode 0");
             return -1;
         }
-        
+
         uint8_t bits = 8;
         result = ioctl(ADCSensor3008::spiAdcHandle, SPI_IOC_WR_BITS_PER_WORD, &bits);
         if (result == -1)
@@ -56,7 +56,7 @@ int32_t ADCSensor3008::initializeSpi()
             perror("ADCSensor3008: setting spi bits per word to 8");
             return -1;
         }
-        
+
         uint32_t speed = 100000;
         result = ioctl(ADCSensor3008::spiAdcHandle, SPI_IOC_WR_MAX_SPEED_HZ, &speed);
         if (result == -1)
@@ -65,7 +65,7 @@ int32_t ADCSensor3008::initializeSpi()
             return -1;
         }
     }
-    
+
     return 0;
 }
 
@@ -73,17 +73,17 @@ int32_t ADCSensor3008::readConversion()
 {
     // Lock us up in the garage
     this->spiAdcMutex.lock();
-    
+
     // Open the spi device file if it has not been yet opened
     if (initializeSpi() == -1)
     {
         this->spiAdcMutex.unlock();
         return -1;
     }
-    
+
     uint8_t tx[] = {(uint8_t)(0x18 + this->adcNumber), 0, 0};
     uint8_t rx[] = {0, 0, 0};
-    
+
     struct spi_ioc_transfer spiTransfer;
     spiTransfer.tx_buf = (unsigned long)tx;
     spiTransfer.rx_buf = (unsigned long)rx;
@@ -91,7 +91,7 @@ int32_t ADCSensor3008::readConversion()
     spiTransfer.delay_usecs = 0;
     spiTransfer.speed_hz = 0;
     spiTransfer.bits_per_word = 0;
-    
+
     int result = ioctl(this->spiAdcHandle, SPI_IOC_MESSAGE(1), &spiTransfer);
     if (result == -1)
     {
@@ -99,14 +99,14 @@ int32_t ADCSensor3008::readConversion()
         this->spiAdcMutex.unlock();
         return -1;
     }
-    
+
     this->spiAdcMutex.unlock();
-    
+
     // Byte 0 is nonsense 0xFF because our command hadn't been read yet,
     // first two bits of the byte 1 are no good either. (time it takes to do adc conversion).
     // Then we only want the top four bits of byte 2, as the 10-bit total value ends there.
     int32_t adcValue = ((rx[1] & 0x3F) << 4) | ((rx[2] & 0xF0) >> 4);
     this->lastConvertedValue = adcValue;
-    
+
     return adcValue;
 }

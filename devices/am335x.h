@@ -3,7 +3,7 @@
  * @author Ethan Hayon
  *
  * This file contains important config for TI am335x ARM Cortex-A8 SoC
- * 
+ *
  * PLEASE DO NOT MODIFY
  *
  * Licensed under the MIT License (MIT)
@@ -31,14 +31,14 @@
 /* GPIO Memory Registers */
 #define GPIO_REGISTER_SIZE (4)
 
-#define GPIO0 	(0x44E07000)
-#define GPIO1		(0x4804C000)
-#define GPIO2		(0x481AC000)
-#define GPIO3		(0x481AE000)
+#define GPIO0 (0x44E07000)
+#define GPIO1 (0x4804C000)
+#define GPIO2 (0x481AC000)
+#define GPIO3 (0x481AE000)
 
 #define GPIO_CLEARDATAOUT (0x190)
 #define GPIO_SETDATAOUT   (0x194)
-#define GPIO_OE			      (0x134)
+#define GPIO_OE           (0x134)
 #define GPIO_DATAOUT      (0x13C)
 #define GPIO_DATAIN       (0x138)
 
@@ -70,80 +70,82 @@
 #define ADC_AVG2  (0x001)
 #define ADC_AVG4  (0x010)
 #define ADC_AVG8  (0x011)
-#define ADC_AVG16 (0x100) 
+#define ADC_AVG16 (0x100)
 
 #define ADC_FIFO0DATA (ADC_TSC+0x100)
 #define ADC_FIFO_MASK (0xFFF)
 
-typedef struct s_PWM {
-  char muxmode; /*!< mux mode, 0-7, see am335x technical manual */
-  char *name;   /*!< name of pwm pin, i.e.: "EHRPWM2B" */
-  char *path;   /*!< path to the pwm, i.e.: "ehrpwm.2:1" */
+typedef struct s_PWM
+{
+    char muxmode; /*!< mux mode, 0-7, see am335x technical manual */
+    char *name;   /*!< name of pwm pin, i.e.: "EHRPWM2B" */
+    char *path;   /*!< path to the pwm, i.e.: "ehrpwm.2:1" */
 } PWM;
 
-typedef struct s_PIN {
-  char *name;   /*!< readable name of pin, i.e.: "GPIO1_21", see beaglebone user guide */
-  unsigned int gpio_bank; /*!< which of the four gpio banks is this pin in, i.e.: GPIO1, r 0x4804C000 */
-  uint8_t gpio; /*!< pin number on the am335x processor */
-  uint8_t bank_id; /*!< pin number within each bank, should be 0-31 */
-  char *mux;    /*!< file name for setting mux */
-  uint8_t eeprom; /*!< position in eeprom */
-  unsigned char pwm_present; /*!< whether or not this pin can be used for PWM */
-  PWM pwm;      /*!< pwm struct if pwm_present is true */
+typedef struct s_PIN
+{
+    char *name;   /*!< readable name of pin, i.e.: "GPIO1_21", see beaglebone user guide */
+    unsigned int gpio_bank; /*!< which of the four gpio banks is this pin in, i.e.: GPIO1, r 0x4804C000 */
+    uint8_t gpio; /*!< pin number on the am335x processor */
+    uint8_t bank_id; /*!< pin number within each bank, should be 0-31 */
+    char *mux;    /*!< file name for setting mux */
+    uint8_t eeprom; /*!< position in eeprom */
+    unsigned char pwm_present; /*!< whether or not this pin can be used for PWM */
+    PWM pwm;      /*!< pwm struct if pwm_present is true */
 
 } PIN;
 
 #define TRUE 1
 #define FALSE 0
 
-#define USR0  ((PIN){	  const_cast<char *>("GPIO1_21"),	   GPIO1,     0,   21,   const_cast<char *>(""),				0,     FALSE, 0   })
-#define USR1  ((PIN){	  const_cast<char *>("GPIO1_22"),	   GPIO1,     0,   22,   const_cast<char *>(""),				0,     FALSE, 0   })
-#define USR2  ((PIN){	  const_cast<char *>("GPIO1_23"),	   GPIO1,     0,   23,   const_cast<char *>(""),				0,     FALSE, 0   })
-#define USR3  ((PIN){	  const_cast<char *>("GPIO1_24"),	   GPIO1,     0,   24,   const_cast<char *>(""),				0,     FALSE, 0   })
-#define P8_3  ((PIN){   const_cast<char *>("GPIO1_6"),	   GPIO1,     38, 	6,	 const_cast<char *>("gpmc_ad6"),        26,    FALSE, 0   })
-#define P8_4  ((PIN){   const_cast<char *>("GPIO1_7"),     GPIO1,     39, 	7,	 const_cast<char *>("gpmc_ad7"),        27,    FALSE, 0   })
-#define P8_5  ((PIN){   const_cast<char *>("GPIO1_2"),     GPIO1,     34, 	2,	 const_cast<char *>("gpmc_ad2"),        22,    FALSE, 0   })
-#define P8_6  ((PIN){   const_cast<char *>("GPIO1_3"),     GPIO1,     35, 	3,	 const_cast<char *>("gpmc_ad3"),        23,    FALSE, 0   })
-#define P8_7  ((PIN){   const_cast<char *>("TIMER4"),      GPIO2,     66, 	2, 	 const_cast<char *>("gpmc_advn_ale"),   41,    FALSE, 0   })
-#define P8_8  ((PIN){   const_cast<char *>("TIMER7"),      GPIO2,     67, 	3,	 const_cast<char *>("gpmc_oen_ren"),    44,    FALSE, 0   })
-#define P8_9  ((PIN){   const_cast<char *>("TIMER5"),      GPIO2,     69, 	5,	 const_cast<char *>("gpmc_ben0_cle"),   42,    FALSE, 0   })
-#define P8_10 ((PIN){   const_cast<char *>("TIMER6"),      GPIO2,     68, 	4,	 const_cast<char *>("gpmc_wen"),        43,    FALSE, 0   })
-#define P8_11 ((PIN){   const_cast<char *>("GPIO1_13"),    GPIO1,     45, 	13,	 const_cast<char *>("gpmc_ad13"),       29,    FALSE, 0   })
-#define P8_12 ((PIN){   const_cast<char *>("GPIO1_12"),    GPIO1,     44, 	12,	 const_cast<char *>("gpmc_ad12"),       28,    FALSE, 0   })
-#define P8_13 ((PIN){   const_cast<char *>("EHRPWM2B"),    GPIO0,     23, 	23,	 const_cast<char *>("gpmc_ad9"),        15,    TRUE,  (PWM){4, const_cast<char *>("EHRPWM2B"), const_cast<char *>("ehrpwm.2:1")}})
-#define P8_14 ((PIN){   const_cast<char *>("GPIO0_26"),    GPIO0,     26, 	26,	 const_cast<char *>("gpmc_ad10"),       16,    FALSE, 0   })
-#define P8_15 ((PIN){   const_cast<char *>("GPIO1_15"),    GPIO1,     47, 	15,	 const_cast<char *>("gpmc_ad15"),       31,    FALSE, 0   })
-#define P8_16 ((PIN){   const_cast<char *>("GPIO1_14"),    GPIO1,     46, 	14,	 const_cast<char *>("gpmc_ad14"),       30,    FALSE, 0   })
-#define P8_17 ((PIN){   const_cast<char *>("GPIO0_27"),    GPIO0,     27, 	27,	 const_cast<char *>("gpmc_ad11"),       17,    FALSE, 0   })
-#define P8_18 ((PIN){   const_cast<char *>("GPIO2_1"),     GPIO2,     65, 	1,	 const_cast<char *>("gpmc_clk"),        40,    FALSE, 0   })
-#define P8_19 ((PIN){   const_cast<char *>("EHRPWM2A"),    GPIO0,     22, 	22,	 const_cast<char *>("gpmc_ad8"),        14,    TRUE,  (PWM){4, const_cast<char *>("EHRPWM2A"), const_cast<char *>("ehrpwm.2:0")}})
-#define P8_20 ((PIN){   const_cast<char *>("GPIO1_31"),    GPIO1,     63, 	31,	 const_cast<char *>("gpmc_csn2"),       39,    FALSE, 0   })
-#define P8_21 ((PIN){   const_cast<char *>("GPIO1_30"),    GPIO1,     62, 	30,	 const_cast<char *>("gpmc_csn1"),       38,    FALSE, 0   })
-#define P8_22 ((PIN){   const_cast<char *>("GPIO1_5"),     GPIO1,     37, 	5,	 const_cast<char *>("gpmc_ad5"),        25,    FALSE, 0   })
-#define P8_23 ((PIN){   const_cast<char *>("GPIO1_4"),     GPIO1,     36, 	4,	 const_cast<char *>("gpmc_ad4"),        24,    FALSE, 0   })
-#define P8_24 ((PIN){   const_cast<char *>("GPIO1_1"),     GPIO1,     33, 	1,	 const_cast<char *>("gpmc_ad1"),        21,    FALSE, 0   })
-#define P8_25 ((PIN){   const_cast<char *>("GPIO1_0"),     GPIO1,     32, 	0,	 const_cast<char *>("gpmc_ad0"),        20,    FALSE, 0   })
-#define P8_26 ((PIN){   const_cast<char *>("GPIO1_29"),    GPIO1,     61, 	29,	 const_cast<char *>("gpmc_csn0"),       37,    FALSE, 0   })
-#define P8_27 ((PIN){   const_cast<char *>("GPIO2_22"),    GPIO2,     86, 	22,	 const_cast<char *>("lcd_vsync"),       57,    FALSE, 0   })
-#define P8_28 ((PIN){   const_cast<char *>("GPIO2_24"),    GPIO2,     88, 	24,	 const_cast<char *>("lcd_pclk"),        59,    FALSE, 0   })
-#define P8_29 ((PIN){   const_cast<char *>("GPIO2_23"),    GPIO2,     87, 	23,	 const_cast<char *>("lcd_hsync"),       58,    FALSE, 0   })
-#define P8_30 ((PIN){   const_cast<char *>("GPIO2_25"),    GPIO2,     89, 	25,	 const_cast<char *>("lcd_ac_bias_en"),  60,    FALSE, 0   })
-#define P8_31 ((PIN){   const_cast<char *>("UART5_CTSN"),  GPIO0,     10, 	10,	 const_cast<char *>("lcd_data14"),       7,    FALSE, 0   })
-#define P8_32 ((PIN){   const_cast<char *>("UART5_RTSN"),  GPIO0,     11, 	11,	 const_cast<char *>("lcd_data15"),       8,    FALSE, 0   })
-#define P8_33 ((PIN){   const_cast<char *>("UART4_RTSN"),  GPIO0,     9,  	9,	 const_cast<char *>("lcd_data13"),       6,    FALSE, 0   })
-#define P8_34 ((PIN){   const_cast<char *>("UART3_RTSN"),  GPIO2,     81, 	17,	 const_cast<char *>("lcd_data11"),      56,    TRUE,  (PWM){2, const_cast<char *>("EHRPWM1B"), const_cast<char *>("ehrpwm.1:1")}})
-#define P8_35 ((PIN){   const_cast<char *>("UART4_CTSN"),  GPIO0,     8,  	8,	 const_cast<char *>("lcd_data12"),       5,    FALSE, 0   })
-#define P8_36 ((PIN){   const_cast<char *>("UART3_CTSN"),  GPIO2,     80, 	16,	 const_cast<char *>("lcd_data10"),      55,    TRUE,  (PWM){2, const_cast<char *>("EHRPWM1A"), const_cast<char *>("ehrpwm.1:0")}})
-#define P8_37 ((PIN){   const_cast<char *>("UART5_TXD"),   GPIO2,     78, 	14,	 const_cast<char *>("lcd_data8"),       53,    FALSE, 0   })
-#define P8_38 ((PIN){   const_cast<char *>("UART5_RXD"),   GPIO2,     79, 	15,	 const_cast<char *>("lcd_data9"),       54,    FALSE, 0   })
-#define P8_39 ((PIN){   const_cast<char *>("GPIO2_12"),    GPIO2,     76, 	12,	 const_cast<char *>("lcd_data6"),       51,    FALSE, 0   })
-#define P8_40 ((PIN){   const_cast<char *>("GPIO2_13"),    GPIO2,     77, 	13,	 const_cast<char *>("lcd_data7"),       52,    FALSE, 0   })
-#define P8_41 ((PIN){   const_cast<char *>("GPIO2_10"),    GPIO2,     74, 	10,	 const_cast<char *>("lcd_data4"),       49,    FALSE, 0   })
-#define P8_42 ((PIN){   const_cast<char *>("GPIO2_11"),    GPIO2,     75, 	11,	 const_cast<char *>("lcd_data5"),       50,    FALSE, 0   })
-#define P8_43 ((PIN){   const_cast<char *>("GPIO2_8"),     GPIO2,     72, 	8,	 const_cast<char *>("lcd_data2"),       47,    FALSE, 0   })
-#define P8_44 ((PIN){   const_cast<char *>("GPIO2_9"),     GPIO2,     73, 	9,	 const_cast<char *>("lcd_data3"),       48,    FALSE, 0   })
-#define P8_45 ((PIN){   const_cast<char *>("GPIO2_6"),     GPIO2,     70, 	6,	 const_cast<char *>("lcd_data0"),       45,    TRUE,  (PWM){3, const_cast<char *>("EHRPWM2A"), const_cast<char *>("ehrpwm.2:0")}})
-#define P8_46 ((PIN){   const_cast<char *>("GPIO2_7"),     GPIO2,     71, 	7,	 const_cast<char *>("lcd_data1"),       46,    TRUE,  (PWM){3, const_cast<char *>("EHRPWM2B"), const_cast<char *>("ehrpwm.2:1")}})
+#define USR0  ((PIN){ const_cast<char *>("GPIO1_21"),   GPIO1, 0,  1,  const_cast<char *>(""),               0,  FALSE, 0   })
+#define USR1  ((PIN){ const_cast<char *>("GPIO1_22"),   GPIO1, 0,  2,  const_cast<char *>(""),               0,  FALSE, 0   })
+#define USR2  ((PIN){ const_cast<char *>("GPIO1_23"),   GPIO1, 0,  3,  const_cast<char *>(""),               0,  FALSE, 0   })
+#define USR3  ((PIN){ const_cast<char *>("GPIO1_24"),   GPIO1, 0,  4,  const_cast<char *>(""),               0,  FALSE, 0   })
+#define P8_3  ((PIN){ const_cast<char *>("GPIO1_6"),    GPIO1, 38, 6,  const_cast<char *>("gpmc_ad6"),       26, FALSE, 0   })
+#define P8_4  ((PIN){ const_cast<char *>("GPIO1_7"),    GPIO1, 39, 7,  const_cast<char *>("gpmc_ad7"),       27, FALSE, 0   })
+#define P8_5  ((PIN){ const_cast<char *>("GPIO1_2"),    GPIO1, 34, 2,  const_cast<char *>("gpmc_ad2"),       22, FALSE, 0   })
+#define P8_6  ((PIN){ const_cast<char *>("GPIO1_3"),    GPIO1, 35, 3,  const_cast<char *>("gpmc_ad3"),       23, FALSE, 0   })
+#define P8_7  ((PIN){ const_cast<char *>("TIMER4"),     GPIO2, 66, 2,  const_cast<char *>("gpmc_advn_ale"),  41, FALSE, 0   })
+#define P8_8  ((PIN){ const_cast<char *>("TIMER7"),     GPIO2, 67, 3,  const_cast<char *>("gpmc_oen_ren"),   44, FALSE, 0   })
+#define P8_9  ((PIN){ const_cast<char *>("TIMER5"),     GPIO2, 69, 5,  const_cast<char *>("gpmc_ben0_cle"),  42, FALSE, 0   })
+#define P8_10 ((PIN){ const_cast<char *>("TIMER6"),     GPIO2, 68, 4,  const_cast<char *>("gpmc_wen"),       43, FALSE, 0   })
+#define P8_11 ((PIN){ const_cast<char *>("GPIO1_13"),   GPIO1, 45, 13, const_cast<char *>("gpmc_ad13"),      29, FALSE, 0   })
+#define P8_12 ((PIN){ const_cast<char *>("GPIO1_12"),   GPIO1, 44, 12, const_cast<char *>("gpmc_ad12"),      28, FALSE, 0   })
+#define P8_13 ((PIN){ const_cast<char *>("EHRPWM2B"),   GPIO0, 23, 23, const_cast<char *>("gpmc_ad9"),       15, TRUE,  (PWM){4, const_cast<char *>("EHRPWM2B"), const_cast<char *>("ehrpwm.2:1")}})
+#define P8_14 ((PIN){ const_cast<char *>("GPIO0_26"),   GPIO0, 26, 26, const_cast<char *>("gpmc_ad10"),      16, FALSE, 0   })
+#define P8_15 ((PIN){ const_cast<char *>("GPIO1_15"),   GPIO1, 47, 15, const_cast<char *>("gpmc_ad15"),      31, FALSE, 0   })
+#define P8_16 ((PIN){ const_cast<char *>("GPIO1_14"),   GPIO1, 46, 14, const_cast<char *>("gpmc_ad14"),      30, FALSE, 0   })
+#define P8_17 ((PIN){ const_cast<char *>("GPIO0_27"),   GPIO0, 27, 27, const_cast<char *>("gpmc_ad11"),      17, FALSE, 0   })
+#define P8_18 ((PIN){ const_cast<char *>("GPIO2_1"),    GPIO2, 65, 1,  const_cast<char *>("gpmc_clk"),       40, FALSE, 0   })
+#define P8_19 ((PIN){ const_cast<char *>("EHRPWM2A"),   GPIO0, 22, 22, const_cast<char *>("gpmc_ad8"),       14, TRUE,  (PWM){4, const_cast<char *>("EHRPWM2A"), const_cast<char *>("ehrpwm.2:0")}})
+#define P8_20 ((PIN){ const_cast<char *>("GPIO1_31"),   GPIO1, 63, 31, const_cast<char *>("gpmc_csn2"),      39, FALSE, 0   })
+#define P8_21 ((PIN){ const_cast<char *>("GPIO1_30"),   GPIO1, 62, 30, const_cast<char *>("gpmc_csn1"),      38, FALSE, 0   })
+#define P8_22 ((PIN){ const_cast<char *>("GPIO1_5"),    GPIO1, 37, 5,  const_cast<char *>("gpmc_ad5"),       25, FALSE, 0   })
+#define P8_23 ((PIN){ const_cast<char *>("GPIO1_4"),    GPIO1, 36, 4,  const_cast<char *>("gpmc_ad4"),       24, FALSE, 0   })
+#define P8_24 ((PIN){ const_cast<char *>("GPIO1_1"),    GPIO1, 33, 1,  const_cast<char *>("gpmc_ad1"),       21, FALSE, 0   })
+#define P8_25 ((PIN){ const_cast<char *>("GPIO1_0"),    GPIO1, 32, 0,  const_cast<char *>("gpmc_ad0"),       20, FALSE, 0   })
+#define P8_26 ((PIN){ const_cast<char *>("GPIO1_29"),   GPIO1, 61, 29, const_cast<char *>("gpmc_csn0"),      37, FALSE, 0   })
+#define P8_27 ((PIN){ const_cast<char *>("GPIO2_22"),   GPIO2, 86, 22, const_cast<char *>("lcd_vsync"),      57, FALSE, 0   })
+#define P8_28 ((PIN){ const_cast<char *>("GPIO2_24"),   GPIO2, 88, 24, const_cast<char *>("lcd_pclk"),       59, FALSE, 0   })
+#define P8_29 ((PIN){ const_cast<char *>("GPIO2_23"),   GPIO2, 87, 23, const_cast<char *>("lcd_hsync"),      58, FALSE, 0   })
+#define P8_30 ((PIN){ const_cast<char *>("GPIO2_25"),   GPIO2, 89, 25, const_cast<char *>("lcd_ac_bias_en"), 60, FALSE, 0   })
+#define P8_31 ((PIN){ const_cast<char *>("UART5_CTSN"), GPIO0, 10, 10, const_cast<char *>("lcd_data14"),      7, FALSE, 0   })
+#define P8_32 ((PIN){ const_cast<char *>("UART5_RTSN"), GPIO0, 11, 11, const_cast<char *>("lcd_data15"),      8, FALSE, 0   })
+#define P8_33 ((PIN){ const_cast<char *>("UART4_RTSN"), GPIO0, 9,  9,  const_cast<char *>("lcd_data13"),      6, FALSE, 0   })
+#define P8_34 ((PIN){ const_cast<char *>("UART3_RTSN"), GPIO2, 81, 17, const_cast<char *>("lcd_data11"),     56, TRUE,  (PWM){2, const_cast<char *>("EHRPWM1B"), const_cast<char *>("ehrpwm.1:1")}})
+#define P8_35 ((PIN){ const_cast<char *>("UART4_CTSN"), GPIO0, 8,  8,  const_cast<char *>("lcd_data12"),      5, FALSE, 0   })
+#define P8_36 ((PIN){ const_cast<char *>("UART3_CTSN"), GPIO2, 80, 16, const_cast<char *>("lcd_data10"),     55, TRUE,  (PWM){2, const_cast<char *>("EHRPWM1A"), const_cast<char *>("ehrpwm.1:0")}})
+#define P8_37 ((PIN){ const_cast<char *>("UART5_TXD"),  GPIO2, 78, 14, const_cast<char *>("lcd_data8"),      53, FALSE, 0   })
+#define P8_38 ((PIN){ const_cast<char *>("UART5_RXD"),  GPIO2, 79, 15, const_cast<char *>("lcd_data9"),      54, FALSE, 0   })
+#define P8_39 ((PIN){ const_cast<char *>("GPIO2_12"),   GPIO2, 76, 12, const_cast<char *>("lcd_data6"),      51, FALSE, 0   })
+#define P8_40 ((PIN){ const_cast<char *>("GPIO2_13"),   GPIO2, 77, 13, const_cast<char *>("lcd_data7"),      52, FALSE, 0   })
+#define P8_41 ((PIN){ const_cast<char *>("GPIO2_10"),   GPIO2, 74, 10, const_cast<char *>("lcd_data4"),      49, FALSE, 0   })
+#define P8_42 ((PIN){ const_cast<char *>("GPIO2_11"),   GPIO2, 75, 11, const_cast<char *>("lcd_data5"),      50, FALSE, 0   })
+#define P8_43 ((PIN){ const_cast<char *>("GPIO2_8"),    GPIO2, 72, 8,  const_cast<char *>("lcd_data2"),      47, FALSE, 0   })
+#define P8_44 ((PIN){ const_cast<char *>("GPIO2_9"),    GPIO2, 73, 9,  const_cast<char *>("lcd_data3"),      48, FALSE, 0   })
+#define P8_45 ((PIN){ const_cast<char *>("GPIO2_6"),    GPIO2, 70, 6,  const_cast<char *>("lcd_data0"),      45, TRUE,  (PWM){3, const_cast<char *>("EHRPWM2A"), const_cast<char *>("ehrpwm.2:0")}})
+#define P8_46 ((PIN){ const_cast<char *>("GPIO2_7"),    GPIO2, 71, 7,  const_cast<char *>("lcd_data1"),      46, TRUE,  (PWM){3, const_cast<char *>("EHRPWM2B"), const_cast<char *>("ehrpwm.2:1")}})
 
 #define P9_11 ((PIN){   const_cast<char *>("UART4_RXD"),   GPIO0,     30,  30,   const_cast<char *>("gpmc_wait0"),       18,   FALSE, 0})
 #define P9_12 ((PIN){   const_cast<char *>("GPIO1_28"),    GPIO1,     60,  28,   const_cast<char *>("gpmc_ben1"),        36,   FALSE, 0})
