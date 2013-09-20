@@ -1,0 +1,39 @@
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.ko
+
+# Compiled Dynamic libraries
+*.so
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+
+# Temporary files
+*.mod.c
+*.cmd
+*~
+*.save
+
+# visual studio files
+*.vcxproj
+*.vcxproj.filters
+
+# some executables
+arduinoParseTest
+gpioUartTest
+tester
+
+
+# Weird other temporary thingies...
+.goutputstream*
+modules.order
+Module.symvers
+
+
+# weird other weird things
+.kdev_include_paths
+.tmp_versions

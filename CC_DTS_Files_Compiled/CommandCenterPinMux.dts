@@ -1,0 +1,192 @@
+ /*
+  * Copyright (C) 2012 Texas Instruments Incorporated - http://www.ti.com/
+  *
+  * This program is free software; you can redistribute it and/or modify
+  * it under the terms of the GNU General Public License version 2 as
+  * published by the Free Software Foundation.
+  * Compile:
+  * dtc -@ -O dtb -I dts -o /lib/firmware/AllGPIOPinMux-00A0.dtbo AllGPIOPinMux.dts 
+  * Load:
+  * echo AllGPIOPinMux > /sys/devices/bone_capemgr.9/slots 
+  */
+  /dts-v1/;
+  /plugin/;
+
+  / {
+         compatible = "ti,beaglebone","ti,beaglebone-black";
+         part-number = "gpioAllpinmux";
+         version = "00A0";
+
+/* state the resources this cape uses */
+	exclusive-use =
+		/* the pin header uses */
+
+        "P8.9",     /* gpio2_5  */
+        "P8.10",    /* gpio2_4  */
+        "P8.11",    /* gpio1_13  */
+        "P8.12",    /* gpio1_12  */
+        "P8.13",    /* gpio0_23  */
+        "P8.14",    /* gpio0_26  */
+        "P8.15",    /* gpio1_15  */
+        "P8.16",    /* gpio1_14  */
+        "P8.17",    /* gpio0_27 */
+        "P8.18",    /* gpio2_1  */
+        "P8.26",    /* gpio1_29  */
+        "P8.27",    /* gpio2_22  */
+        "P8.28",    /* gpio2_24  */
+        "P8.29",    /* gpio2_23  */
+        "P8.30",    /* gpio2_25  */
+        "P8.32",    /* gpio0_11  */
+        "P8.33",    /* gpio0_9  */
+		"P8.34",	/* gpio2_17 */
+        "P8.35",    /* gpio0_8  */
+		"P8.36",	/* gpio2_16 */
+		"P8.39",	/* gpio2_12 */
+		"P8.40",	/* gpio2_13 */
+		"P8.42",	/* gpio2_11 */
+		"P8.45",	/* gpio2_6 */
+		"P8.46",	/* gpio2_7 */
+
+        "P9.11",    /* gpio0_30  */
+        "P9.12",    /* gpio1_28  */
+        "P9.13",    /* gpio0_31  */
+        "P9.14",    /* gpio1_18  */
+        "P9.15",    /* gpio1_16  */
+        "P9.16",    /* gpio1_19  */
+        "P9.23",    /* gpio1_17  */
+        "P9.24",    /* gpio0_15  */
+        "P9.25",    /* gpio3_21  */
+        "P9.26",    /* gpio0_14  */
+        "P9.27",    /* gpio3_19  */
+        "P9.28",    /* gpio3_17  */
+        "P9.29",    /* gpio3_15  */
+        "P9.30",    /* gpio3_16  */
+        "P9.31",    /* gpio3_14  */
+        "P9.41",    /* gpio0_20  */
+        "P9.42",    /* gpio0_7  */
+
+		/* the hardware IP uses */
+
+         "gpio2_5",
+         "gpio2_4",
+         "gpio1_13",
+         "gpio1_12",
+         "gpio0_23",
+         "gpio0_26",
+         "gpio1_15",
+         "gpio1_14",
+         "gpio0_27",
+         "gpio2_1",
+         "gpio1_29",
+         "gpio2_22",
+         "gpio2_24",
+         "gpio2_23",
+         "gpio2_25",
+         "gpio0_11",
+         "gpio0_9",
+	     "gpio2_17",
+         "gpio0_8",
+	     "gpio2_16",
+	     "gpio2_12",
+	     "gpio2_13",
+	     "gpio2_11",
+	     "gpio2_6",
+	     "gpio2_7",
+
+         "gpio0_30",
+         "gpio1_28",
+         "gpio0_31",
+         "gpio1_18",
+         "gpio1_16",
+         "gpio1_19",
+         "gpio1_17",
+         "gpio0_15",
+         "gpio3_21",
+         "gpio0_14",
+         "gpio3_19",
+         "gpio3_17",
+         "gpio3_15",
+         "gpio3_16",
+         "gpio3_14",
+         "gpio0_20",
+         "gpio0_7";
+
+         fragment@0 {
+                 target = <&am33xx_pinmux>;
+                 __overlay__ {
+                          gpioAllpinmux: gpioAllpinmux_pins {
+                                  pinctrl-single,pins = <
+                                        0x09C 0x07       /* P8_9, GPMC_BEn0_CLE, OMAP_PIN_OUTPUT | OMAP_MUX_MODE7 */
+                                        0x098 0x07       /* P8_10, GPMC_WEn, OMAP_PIN_OUTPUT | OMAP_MUX_MODE7 */ 
+                                        0x034 0x07       /* P8_11, GPMC_AD13, OMAP_PIN_OUTPUT | OMAP_MUX_MODE7 */
+                                        0x030 0x07       /* P8_12, GPMC_AD12, OMAP_PIN_OUTPUT | OMAP_MUX_MODE7 */ 
+                                        0x024 0x07       /* P8_13, GPMC_AD9, OMAP_PIN_OUTPUT | OMAP_MUX_MODE7 */
+                                        0x028 0x07       /* P8_14, GPMC_AD10, OMAP_PIN_OUTPUT | OMAP_MUX_MODE7 */ 
+                                        0x03C 0x07       /* P8_15, GPMC_AD15, OMAP_PIN_OUTPUT | OMAP_MUX_MODE7 */
+                                        0x038 0x07       /* P8_16, GPMC_AD14, OMAP_PIN_OUTPUT | OMAP_MUX_MODE7 */ 
+                                        0x02C 0x07       /* P8_17, GPMC_AD11, OMAP_PIN_OUTPUT | OMAP_MUX_MODE7 */
+                                        0x08C 0x07       /* P8_18, GPMC_CLK, OMAP_PIN_OUTPUT | OMAP_MUX_MODE7 */ 
+                                        /*0x010 0x07*/       /* P8_23, GPMC_AD4, OMAP_PIN_OUTPUT | OMAP_MUX_MODE7 */
+                                        /*0x004 0x07*/       /* P8_24, GPMC_AD1, OMAP_PIN_OUTPUT | OMAP_MUX_MODE7 */ 
+                                        /*0x07C 0x07*/       /* P8_26, GPMC_CSn0, OMAP_PIN_OUTPUT | OMAP_MUX_MODE7 */
+                                        0x0E0 0x07       /* P8_27, LCD_VSYNC, OMAP_PIN_OUTPUT | OMAP_MUX_MODE7 */ 
+                                        0x0E8 0x07       /* P8_28, LCD_PCLK, OMAP_PIN_OUTPUT | OMAP_MUX_MODE7 */
+                                        0x0E4 0x07       /* P8_29, LCD_HSYNC, OMAP_PIN_OUTPUT | OMAP_MUX_MODE7 */ 
+                                        0x0EC 0x07       /* P8_30, LCD_AC_BIAS_EN, OMAP_PIN_OUTPUT | OMAP_MUX_MODE7 */
+                                        /*0x0D8 0x07*/       /* P8_31, LCD_DATA14, OMAP_PIN_OUTPUT | OMAP_MUX_MODE7 */
+                                        /*0x0DC 0x07*/       /* P8_32, LCD_DATA15, OMAP_PIN_OUTPUT | OMAP_MUX_MODE7 */ 
+                                        /*0x0D4 0x07*/       /* P8_33, LCD_DATA13, OMAP_PIN_OUTPUT | OMAP_MUX_MODE7 */
+                                        /*0x0CC 0x07*/       /* P8_34, LCD_DATA11, OMAP_PIN_OUTPUT | OMAP_MUX_MODE7 */
+                                        0x0D0 0x07       /* P8_35, LCD_DATA12, OMAP_PIN_OUTPUT | OMAP_MUX_MODE7 */      
+                                        0x0C8 0x07       /* P8_36, LCD_DATA10, OMAP_PIN_OUTPUT | OMAP_MUX_MODE7 */
+                                        /*0x0C0 0x07*/       /* P8_37, LCD_DATA8, OMAP_PIN_OUTPUT | OMAP_MUX_MODE7 */
+                                        /*0x0C4 0x07*/       /* P8_38, LCD_DATA9, OMAP_PIN_OUTPUT | OMAP_MUX_MODE7 */
+                                        0x0B8 0x07       /* P8_39, LCD_DATA6, OMAP_PIN_OUTPUT | OMAP_MUX_MODE7 */
+                                        0x0BC 0x07       /* P8_40, LCD_DATA7, OMAP_PIN_OUTPUT | OMAP_MUX_MODE7 */
+                                        /*0x0B0 0x07*/       /* P8_41, LCD_DATA4, OMAP_PIN_OUTPUT | OMAP_MUX_MODE7 */
+                                        0x0B4 0x07       /* P8_42, LCD_DATA5, OMAP_PIN_OUTPUT | OMAP_MUX_MODE7 */
+                                        /*0x0A8 0x07*/       /* P8_43, LCD_DATA2, OMAP_PIN_OUTPUT | OMAP_MUX_MODE7 */
+                                        /*0x0AC 0x07*/       /* P8_44, LCD_DATA3, OMAP_PIN_OUTPUT | OMAP_MUX_MODE7 */
+                                        0x0A0 0x07       /* P8_45, LCD_DATA0, OMAP_PIN_OUTPUT | OMAP_MUX_MODE7 */
+                                        0x0A4 0x07       /* P8_46, LCD_DATA1, OMAP_PIN_OUTPUT | OMAP_MUX_MODE7 */
+
+                                        /*0x070 0x07*/       /* P9_11, GPMC_WAIT0, OMAP_PIN_OUTPUT | OMAP_MUX_MODE7 */
+                                        /*0x078 0x07*/       /* P9_12, GPMC_BEn1, OMAP_PIN_OUTPUT | OMAP_MUX_MODE7 */
+                                        /*0x074 0x07*/       /* P9_13, GPMC_WPn, OMAP_PIN_OUTPUT | OMAP_MUX_MODE7 */
+                                        /*0x048 0x07*/       /* P9_14, GPMC_A2, OMAP_PIN_OUTPUT | OMAP_MUX_MODE7 */
+                                        /*0x040 0x07*/       /* P9_15, GPMC_A0, OMAP_PIN_OUTPUT | OMAP_MUX_MODE7 */
+                                        /*0x04C 0x07*/       /* P9_16, GPMC_A3, OMAP_PIN_OUTPUT | OMAP_MUX_MODE7 */
+                                        /*0x15C 0x07*/       /* P9_17, SPI0_CS0, OMAP_PIN_OUTPUT | OMAP_MUX_MODE7 */
+                                        /*0x158 0x07*/       /* P9_18, SPI0_D1, OMAP_PIN_OUTPUT | OMAP_MUX_MODE7 */
+                                        /*0x17C 0x07*/       /* P9_19, UART1_RTSn, OMAP_PIN_OUTPUT | OMAP_MUX_MODE7 */
+                                        /*0x178 0x07*/       /* P9_20, UART1_CTSn, OMAP_PIN_OUTPUT | OMAP_MUX_MODE7 */
+                                        /*0x154 0x07*/       /* P9_21, SPI0_D0, OMAP_PIN_OUTPUT | OMAP_MUX_MODE7 */
+                                        /*0x150 0x07*/       /* P9_22, SPI0_SCLK, OMAP_PIN_OUTPUT | OMAP_MUX_MODE7 */
+                                        /*0x044 0x07*/       /* P9_23, GPMC_A1, OMAP_PIN_OUTPUT | OMAP_MUX_MODE7 */
+                                        /*0x184 0x07*/       /* P9_24, UART1_TXD, OMAP_PIN_OUTPUT | OMAP_MUX_MODE7 */
+                                        /*0x1AC 0x07*/       /* P9_25, MCASP0_AHCLKX, OMAP_PIN_OUTPUT | OMAP_MUX_MODE7 */
+                                        /*0x180 0x07*/       /* P9_26, UART1_RXD, OMAP_PIN_OUTPUT | OMAP_MUX_MODE7 */
+                                        /*0x1A4 0x07*/       /* P9_27, MCASP0_FSR, OMAP_PIN_OUTPUT | OMAP_MUX_MODE7 */
+                                        /*0x19C 0x07*/       /* P9_28, MCASP0_AHCLKR, OMAP_PIN_OUTPUT | OMAP_MUX_MODE7 */
+                                        /*0x194 0x07*/       /* P9_29, MCASP0_FSX, OMAP_PIN_OUTPUT | OMAP_MUX_MODE7 */
+                                        /*0x198 0x07*/       /* P9_30, MCASP0_AXR0, OMAP_PIN_OUTPUT | OMAP_MUX_MODE7 */
+                                        /*0x190 0x07*/       /* P9_31, MCASP0_ACLKX, OMAP_PIN_OUTPUT | OMAP_MUX_MODE7 */
+                                        /*0x1B4 0x07*/       /* P9_41, XDMA_EVENT_INTR1, OMAP_PIN_OUTPUT | OMAP_MUX_MODE7 */
+                                        /*0x164 0x07*/       /* P9_42, ECAP0_IN_PWM0_OUT, OMAP_PIN_OUTPUT | OMAP_MUX_MODE7 */
+                               
+                                 >;
+                          };
+                 };
+         };
+
+         fragment@1 {
+                 target = <&ocp>;
+                 __overlay__ {
+                    status= "okay";
+                    pinctrl-names = "default";
+                    pinctrl-0 = <&gpioAllpinmux>;                        
+
+                 };
+         };
+  };
+
