@@ -39,6 +39,8 @@ be found, which will likely have to happen by leveraging the on board PRUs
 #define STAY_ALIVE_PIN DIG_I_O_1
 #define CELL_MAX_TAGS 6
 
+//Git will see this
+
 /*
 Pin defines based on the CPB.  These however create a problem for the BBB
 due to boot problems.  If some of the pins on the BBB are grounded during boot,
