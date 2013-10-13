@@ -1,16 +1,15 @@
-#include <stdint.h>
-#include "ADCSensor3008.h"
-
 #ifndef TEMPERATURE_SENSOR
 #define TEMPERATURE_SENSOR
+
+#include <stdint.h>
+#include "ADCSensor3008.h"
 
 // Takes measurements from a physical temperature sensor device.
 // This is sepcifically meant here for a LM335 with a 1k resistor.
 // Uncalibrated, we don't really expect too much accuracy. +-3 celsius or so.
 class TemperatureSensor
 {
-    public:
-
+public:
     /*
     Make use of int32_t, int16_t, int8_t (32-bits, 16-bits, or 8-bits) 
     instead of int, short, or char.
@@ -31,9 +30,7 @@ class TemperatureSensor
     // If the query is taking too long, the query should be cut off,
     // and INT32_MIN returned.
     int32_t readTemperature();
-
-    private:
-
+private:
     ADCSensor3008* adc;
     int32_t lastTemperature;
 };

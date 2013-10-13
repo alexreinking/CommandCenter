@@ -17,8 +17,8 @@ int32_t TemperatureSensor::readTemperature()
     // T = V * T0 / V0
     // V0 = 2.98 volts * 1023 max value / 5 volts max value
     // return value = T - 24850 so that the result is in celsius, not kelvin
-    int32_t voltage = 1000*adcValue*5/1023; //mV
-    int32_t v0 = 1000*626*5/1023; //mV //needs calibration
-    lastTemperature = ((voltage * 300.5/v0) - 273.15)*10;
+    int32_t voltage = 5000*(adcValue/1023); //mV
+    const int32_t v0 = 5000*(610/1023); //mV. A value of 610 maps to 2.98V
+    lastTemperature = (voltage * 298.0/v0) - 273.15;
     return lastTemperature;
 }
